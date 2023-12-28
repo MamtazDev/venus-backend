@@ -1,6 +1,6 @@
-import { Jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
-const isAuth = async (req, res, next) => {
+export const isAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   try {
     if (!authHeader) {
