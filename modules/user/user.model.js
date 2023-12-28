@@ -24,6 +24,18 @@ const userSchema = new mongoose.Schema(
       enum: ["Male", "Female", "Others"],
       required: true,
     },
+    image: {
+      type: String,
+      required: false,
+    },
+    details: {
+      type: String,
+      required: false,
+    },
+    phoneNumber: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
