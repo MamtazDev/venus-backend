@@ -1,4 +1,5 @@
-import { generateToken } from "../../utils/auth.js";
+import bcrypt from "bcryptjs";
+import { generateToken, removeSensitiveInfo } from "../../utils/auth.js";
 import User from "./user.model.js";
 
 export const registerUser = async (req, res) => {
@@ -14,7 +15,7 @@ export const registerUser = async (req, res) => {
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
-        password: bcrcypt.hashSync(req.body.password),
+        password: bcrypt.hashSync(req.body.password),
         country: req.body.country,
         gender: req.body.gender,
       });
@@ -24,7 +25,7 @@ export const registerUser = async (req, res) => {
       res.status(200).send({
         message: "Account created  successfully",
         success: true,
-        user,
+        user: removeSensitiveInfo(user),
         accessToken: token,
       });
     }
@@ -46,12 +47,12 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    if (user && bcrcypt.compareSync(req.body.password, user.password)) {
+    if (user && bcrypt.compareSync(req.body.password, user.password)) {
       const accessToken = await generateToken(user);
       return res.status(200).send({
         success: true,
         message: "Logged in successfully",
-        user,
+        user: removeSensitiveInfo(user),
         accessToken,
       });
     } else {
@@ -72,7 +73,7 @@ export const getloggedInUserInfo = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req?.user?._id });
     if (user) {
-      res.status(200).send(user);
+      res.status(200).send(removeSensitiveInfo(user));
     } else {
       res.status(401).send("User Not Found");
     }
@@ -83,7 +84,7 @@ export const getloggedInUserInfo = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).sort({ _id: -1 });
+    const users = await User.find({}).sort({ _id: -1 }).select("-password");
     res.status(200).send({
       data: users,
     });
@@ -148,7 +149,7 @@ export const updateUserInfo = async (req, res) => {
       res.status(200).json({
         success: true,
         message: "User Info Update successfully",
-        data: result,
+        data: removeSensitiveInfo(result),
       });
     } else {
       res.status(201).json({

@@ -2,14 +2,15 @@ import jwt from "jsonwebtoken";
 
 export const generateToken = async (user) => {
   return jwt.sign(
-    {
-      role: user.role,
-      userName: user?.userName,
-      email: user.email,
-    },
+    { name: user.last_name, email: user.email, _id: user?._id },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "1d",
+      expiresIn: "7d",
     }
   );
+};
+
+export const removeSensitiveInfo = (user) => {
+  const { password, ...userWithoutPassword } = user.toObject();
+  return userWithoutPassword;
 };
