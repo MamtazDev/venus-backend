@@ -1,16 +1,27 @@
 import express from "express";
-import { isAuth } from "../../utils/middleware.js";
+import { isAdmin, isAuth } from "../../utils/middleware.js";
+import {
+  deleteUser,
+  getAllUsers,
+  getUser,
+  getloggedInUserInfo,
+  loginUser,
+  registerUser,
+  updateUserInfo,
+} from "./user.controller.js";
 
 const router = express.Router();
 
-// // READ
-// router.get("/:id", verifyToken, getUser);
-// router.get("/:id/friends", verifyToken, getUserFriends);
 
-// // UPDATE
-// router.patch("/:id/:friendId", verifyToken, addRemoveFriend);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
-router.post("/register", isAuth);
-router.post("/login", isAuth);
+router.get("/", isAuth, getAllUsers);
+router.get("/myInfo", isAuth, getloggedInUserInfo);
+router.get("/userInfo/:id", isAuth, getUser);
+
+router.delete("/deleteUser/:id", isAdmin, deleteUser);
+
+router.patch("/updateUserInfo/:id", isAuth, updateUserInfo);
 
 export default router;
