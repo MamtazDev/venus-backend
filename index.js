@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 
+import userRoutes from "./modules/user/user.route.js";
+
 // CONFIGURATIONS
 dotenv.config();
 const app = express();
@@ -13,9 +15,8 @@ const PORT = process.env.PORT || 8000;
 // DATABASE CONNECTION
 connectDB();
 
-
 // ROUTES
-app.use("api/users",)
+app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is runnig");
