@@ -8,11 +8,11 @@ const leagueSchema = new mongoose.Schema(
     },
     event: {
       type: String,
-      required: true,
+      required: false,
     },
     eventScope: {
       type: String,
-      required: true,
+      required: false,
     },
     inviteCode: {
       type: String,
