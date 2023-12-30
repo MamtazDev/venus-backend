@@ -3,6 +3,7 @@ import { isAdmin, isAuth } from "../../utils/middleware.js";
 import {
   createLeague,
   getLeagueUsersData,
+  getSingleLeagueInfo,
   getUserLeagues,
   joinLeague,
 } from "./league.controller.js";
@@ -16,6 +17,7 @@ router.post("/join", isAuth, joinLeague);
 
 router.get("/userLeagues", isAuth, getUserLeagues);
 router.get("/leagueUsersData/:leagueId", isAuth, getLeagueUsersData);
+router.get("/leagueInfo/:id", isAuth, getSingleLeagueInfo);
 
 // router.get("/")
 // router.get("/myInfo", isAuth, getloggedInUserInfo);
