@@ -113,3 +113,15 @@ export const getLeagueUsersData = async (req, res) => {
     });
   }
 };
+export const getSingleLeagueInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const league = await League.findById(id);
+    res.status(200).send(league);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+      success: false,
+    });
+  }
+};
