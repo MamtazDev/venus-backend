@@ -11,6 +11,7 @@ export const generateToken = async (user) => {
 };
 
 export const removeSensitiveInfo = (user) => {
-  const { password, ...userWithoutPassword } = user.toObject();
+  const { password, updatedAt, __v, createdAt, ...userWithoutPassword } =
+    user.toObject();
   return userWithoutPassword;
 };

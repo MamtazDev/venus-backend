@@ -22,11 +22,6 @@ router.get("/userInfo/:id", isAuth, getUser);
 
 router.delete("/deleteUser/:id", isAdmin, deleteUser);
 
-router.patch(
-  "/updateUserInfo/:id",
-  isAuth,
-  upload.single("image"),
-  updateUserInfo
-);
+router.patch("/updateUserInfo", isAuth, upload.single("image"), updateUserInfo);
 
 export default router;

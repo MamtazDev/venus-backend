@@ -4,8 +4,14 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRoutes from "./modules/user/user.route.js";
 import leagueRoutes from "./modules/league/league.route.js";
+import publicApiRoutes from "./modules/publicApis/publicApis.routes.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // CONFIGURATIONS
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -18,6 +24,10 @@ connectDB();
 // ROUTES
 app.use("/api/users", userRoutes);
 app.use("/api/league", leagueRoutes);
+
+app.use("/public-api", publicApiRoutes);
+
+app.use("/assets", express.static(path.join(__dirname, "/")));
 
 app.get("/", (req, res) => {
   res.send("Server is runnig");
