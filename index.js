@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-
 import userRoutes from "./modules/user/user.route.js";
 import leagueRoutes from "./modules/league/league.route.js";
 

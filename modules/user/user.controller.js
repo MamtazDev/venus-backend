@@ -138,11 +138,17 @@ export const getUser = async (req, res) => {
 export const updateUserInfo = async (req, res) => {
   try {
     const { ...info } = req.body;
+
     const isExist = await User.findOne({ _id: req.params.id });
+
+    const image = req.file ? req.file.filename : undefined;
+
+    const updateInfo = image ? { image, ...info } : { ...info };
+
     if (isExist) {
       const result = await User.findByIdAndUpdate(
         { _id: req.params.id },
-        info,
+        updateInfo,
         {
           new: true,
         }
