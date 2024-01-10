@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.get("/all-leagues", getAvailableLeagues);
 router.get("/all-seasons/:id", getSeasonsByLeagueId);
+router.get("/all-teams/:id");
 
 // router.get("/")
 // router.get("/myInfo", isAuth, getloggedInUserInfo);

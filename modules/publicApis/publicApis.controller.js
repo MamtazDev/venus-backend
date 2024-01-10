@@ -1,9 +1,9 @@
-import AXIOS from "../../config/axiosInstance.js";
+import axios from "axios";
 
 export const getAvailableLeagues = async (req, res) => {
   try {
-    const response = await AXIOS.get(
-      `/v3/football/leagues?api_token=7c0V4CPUaauLeyRb8LjqaCdLZxidiGvmUOd7P1PWTPUiasZLNzX1TRFgOMzD`
+    const response = await axios.get(
+      `${process.env.PUBLIC_API_URL}/v3/football/leagues?api_token=${process.env.PUBLIC_API_TOKEN}`
     );
 
     res.status(200).send(response?.data?.data);
@@ -15,14 +15,18 @@ export const getAvailableLeagues = async (req, res) => {
 };
 
 export const getSeasonsByLeagueId = async (req, res) => {
+  console.log(req.params.id, "ddd");
   try {
-    const response = await AXIOS.get(
-      `/v3/football/seasons?api_token=${process.env.PUBLIC_API_TOKEN}`
+    const response = await axios.get(
+      `${process.env.PUBLIC_API_URL}/v3/football/seasons?api_token=${process.env.PUBLIC_API_TOKEN}`
     );
 
+    console.log(response.data.data[0].league_id, "ddfdfd");
+
     const seasons = response?.data?.data?.filter(
-      (i) => i.league_id === req.params.id
+      (i) => i.league_id === Number(req.params.id)
     );
+    console.log(seasons, "ssdd");
     res.status(200).send(seasons);
   } catch (error) {
     res.status(500).send({
@@ -30,16 +34,3 @@ export const getSeasonsByLeagueId = async (req, res) => {
     });
   }
 };
-
-// export const getAllUsers = async (req, res) => {
-//   try {
-//     const users = await User.find({}).sort({ _id: -1 }).select("-password");
-//     res.status(200).send({
-//       data: users,
-//     });
-//   } catch (err) {
-//     res.status(500).send({
-//       message: err.message,
-//     });
-//   }
-// };
