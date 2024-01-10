@@ -10,7 +10,15 @@ const leagueSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    eventId: {
+      type: String,
+      required: false,
+    },
     eventScope: {
+      type: String,
+      required: false,
+    },
+    eventScopeId: {
       type: String,
       required: false,
     },
