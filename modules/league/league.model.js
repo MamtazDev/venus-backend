@@ -12,7 +12,7 @@ const leagueSchema = new mongoose.Schema(
     },
     eventId: {
       type: String,
-      required: false,
+      required: true,
     },
     eventScope: {
       type: String,
@@ -20,7 +20,7 @@ const leagueSchema = new mongoose.Schema(
     },
     eventScopeId: {
       type: String,
-      required: false,
+      required: true,
     },
     inviteCode: {
       type: String,
