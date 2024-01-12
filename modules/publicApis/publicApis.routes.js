@@ -2,6 +2,7 @@ import express from "express";
 import {
   getAvailableLeagues,
   getSeasonsByLeagueId,
+  getTeamBySeasonId,
 } from "./publicApis.controller.js";
 
 const router = express.Router();
@@ -13,7 +14,7 @@ const router = express.Router();
 
 router.get("/all-leagues", getAvailableLeagues);
 router.get("/all-seasons/:id", getSeasonsByLeagueId);
-router.get("/all-teams/:id");
+router.get("/all-teams/:id", getTeamBySeasonId);
 
 // router.get("/")
 // router.get("/myInfo", isAuth, getloggedInUserInfo);

@@ -2,10 +2,11 @@ import League from "./league.model.js";
 import { v4 as uuidv4 } from "uuid";
 import LeagueUser from "./leagueUser.model.js";
 import mongoose from "mongoose";
+import AuctionSettings from "../auction/auctionSettings.model.js";
 
 export const createLeague = async (req, res) => {
   try {
-    const { leagueName, event, eventScope } = req.body;
+    const { leagueName, event, eventScope, eventScopeId, eventId } = req.body;
     const inviteCode = uuidv4();
 
     const newLeague = new League({
@@ -14,6 +15,8 @@ export const createLeague = async (req, res) => {
       eventScope,
       creatorId: req.user._id,
       inviteCode,
+      eventId,
+      eventScopeId,
     });
 
     const league = await newLeague.save();
@@ -24,7 +27,13 @@ export const createLeague = async (req, res) => {
       userName: req.user.name,
       role: "Creator",
     });
+    const auctionSettings = new AuctionSettings({
+      leagueName: leagueName,
+      leagueId: league?._id,
+    });
+
     const result = await joinLeague.save();
+    const settings = await auctionSettings.save();
     res.status(200).send({
       message: "League created  successfully!",
       success: true,
@@ -42,8 +51,15 @@ export const joinLeague = async (req, res) => {
   try {
     const { inviteCode } = req.query;
 
-    const league = await League.findOne({ inviteCode });
-    const isExist = await LeagueUser.findOne({ user: req.user?._id });
+    const league = await League.findOne({ inviteCode: inviteCode });
+
+    const isExist = await LeagueUser.findOne({
+      user: req.user?._id,
+      league: league?._id,
+    });
+
+    console.log(league, "league");
+    console.log(isExist, "isExist");
 
     if (league && !isExist) {
       const joinLeague = new LeagueUser({
@@ -64,7 +80,7 @@ export const joinLeague = async (req, res) => {
         message: "You have already joined this league!",
         success: false,
       });
-    } else {
+    } else if (!league && !isExist) {
       res.status(401).send({
         message: "There is no such league.",
         success: false,
