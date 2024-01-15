@@ -1,4 +1,5 @@
 import { removeSensitiveInfo } from "../../utils/auth.js";
+import Auction from "./auction.model.js";
 import AuctionSettings from "./auctionSettings.model.js";
 
 export const getAuctionSettings = async (req, res) => {
@@ -35,6 +36,24 @@ export const updateAuctionSettings = async (req, res) => {
       res.status(401).json({
         success: false,
         message: "No league found!",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+      success: false,
+    });
+  }
+};
+
+export const auctionCreated = async (req, res) => {
+  try {
+    const { teamName, teamId, bidInfo } = req.body;
+    const isExist = await Auction.findById(req.params.id);
+
+    if (isExist) {
+      const result = await Auction.findByIdAndUpdate(req.params.id, {
+        
       });
     }
   } catch (error) {
