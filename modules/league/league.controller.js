@@ -120,7 +120,7 @@ export const getLeagueUsersData = async (req, res) => {
 
     const leagueUsers = await LeagueUser.find({
       league: leagueId,
-    });
+    }).populate("user");
     res.status(200).send(leagueUsers);
   } catch (err) {
     res.status(500).send({
@@ -129,6 +129,7 @@ export const getLeagueUsersData = async (req, res) => {
     });
   }
 };
+
 export const getSingleLeagueInfo = async (req, res) => {
   try {
     const { id } = req.params;

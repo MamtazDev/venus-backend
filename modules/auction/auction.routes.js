@@ -10,6 +10,7 @@ const router = express.Router();
 // router.post("/create", isAuth, createLeague);
 // router.post("/join", isAuth, joinLeague);
 
+
 router.get("/settingsInfo/:id", isAuth, getAuctionSettings);
 // router.get("/leagueUsersData/:leagueId", isAuth, getLeagueUsersData);
 // router.get("/leagueInfo/:id", isAuth, getSingleLeagueInfo);
