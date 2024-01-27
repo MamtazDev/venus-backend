@@ -6,6 +6,7 @@ import userRoutes from "./modules/user/user.route.js";
 import leagueRoutes from "./modules/league/league.route.js";
 import auctionRoutes from "./modules/auction/auction.routes.js";
 import publicApiRoutes from "./modules/publicApis/publicApis.routes.js";
+import messageRoutes from "./modules/message/message.routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -26,6 +27,7 @@ connectDB();
 app.use("/api/users", userRoutes);
 app.use("/api/league", leagueRoutes);
 app.use("/api/auction", auctionRoutes);
+app.use("/api/message", messageRoutes);
 
 app.use("/public-api", publicApiRoutes);
 

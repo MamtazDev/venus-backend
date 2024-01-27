@@ -8,12 +8,8 @@ const auctionSchema = new mongoose.Schema(
       required: true,
     },
 
-    teamName: {
-      type: String,
-      required: true,
-    },
-    teamId: {
-      type: String,
+    team: {
+      type: Object,
       required: true,
     },
     bidInfo: {
@@ -27,6 +23,15 @@ const auctionSchema = new mongoose.Schema(
           amount: Number,
         },
       ],
+      required: false,
+      default: [],
+    },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    price: {
+      type: Number,
       required: false,
     },
     isActive: {
