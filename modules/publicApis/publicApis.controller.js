@@ -36,6 +36,7 @@ export const getTeamBySeasonId = async (req, res) => {
     const response = await axios.get(
       `${process.env.PUBLIC_API_URL}/v3/football/teams/seasons/${req.params.id}?api_token=${process.env.PUBLIC_API_TOKEN}`
     );
+    
     res.status(200).send(response?.data?.data);
   } catch (error) {
     res.status(500).send({
