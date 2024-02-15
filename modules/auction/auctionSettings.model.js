@@ -11,7 +11,6 @@ const auctionSettingsSchema = new mongoose.Schema(
       ref: "League",
       required: true,
     },
-
     auctionTime: {
       type: Number,
       default: 15,

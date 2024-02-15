@@ -109,8 +109,12 @@ export const getUserLeagues = async (req, res) => {
 };
 
 export const getLeagueUsersData = async (req, res) => {
+
+  //realtime auction user activation
+
+
   try {
-    const { leagueId } = req.params;
+    const { leagueId } = req.params;  
 
     if (!mongoose.Types.ObjectId.isValid(leagueId)) {
       return res
