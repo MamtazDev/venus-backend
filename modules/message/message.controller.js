@@ -1,3 +1,4 @@
+import User from "../user/user.model.js";
 import Message from "./message.model.js";
 
 export const addMessage = async (req, res) => {
@@ -6,9 +7,12 @@ export const addMessage = async (req, res) => {
 
     const newMessage = new Message({ leagueId, message, user: req.user?._id });
     const result = await newMessage.save();
+
+    const userInfo = await User.findById(result?.user);
     res.status(200).send({
       success: true,
       message: "Message sent successfully!",
+      data: { ...result.toObject(), user: userInfo },
     });
   } catch (error) {
     res.status(500).send({
