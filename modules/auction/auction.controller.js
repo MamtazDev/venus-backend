@@ -115,3 +115,18 @@ export const setTeamOwner = async (req, res) => {
     });
   }
 };
+
+export const getMyBuidInfo = async (req, res) => {
+  try {
+    const auctions = await Auction.find({ owner: req.user._id }).sort({
+      createdAt: -1,
+    });
+
+    res.status(200).send(auctions);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+      success: false,
+    });
+  }
+};

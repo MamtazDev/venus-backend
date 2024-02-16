@@ -171,3 +171,32 @@ export const updateUserInfo = async (req, res) => {
     });
   }
 };
+
+export const changePassword = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      const newPassword = bcrypt.hashSync(req.body.password);
+
+      user.password = newPassword;
+
+      await user.save();
+
+      res.status(200).send({
+        message: "Password changed successfully!",
+        success: true,
+      });
+    } else {
+      res.status(201).send({
+        message: "User Not Found!",
+        success: false,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+      success: false,
+    });
+  }
+};

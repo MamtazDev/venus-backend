@@ -6,6 +6,8 @@ import {
   getSingleLeagueInfo,
   getUserLeagues,
   joinLeague,
+  removeUserFromLeague,
+  updateLeagueInfo,
 } from "./league.controller.js";
 
 const router = express.Router();
@@ -23,8 +25,8 @@ router.get("/leagueInfo/:id", isAuth, getSingleLeagueInfo);
 // router.get("/myInfo", isAuth, getloggedInUserInfo);
 // router.get("/userInfo/:id", isAuth, getUser);
 
-// router.delete("/deleteUser/:id", isAdmin, deleteUser);
+router.delete("/removeUserFromLeague/:id", isAuth, removeUserFromLeague);
 
-// router.patch("/updateUserInfo/:id", isAuth, updateUserInfo);
+router.patch("/updateLeagueInfo/:id", isAuth, updateLeagueInfo);
 
 export default router;
