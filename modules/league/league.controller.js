@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import LeagueUser from "./leagueUser.model.js";
 import mongoose from "mongoose";
 import AuctionSettings from "../auction/auctionSettings.model.js";
+import { removeSensitiveInfo } from "../../utils/auth.js";
 
 export const createLeague = async (req, res) => {
   try {
@@ -58,8 +59,8 @@ export const joinLeague = async (req, res) => {
       league: league?._id,
     });
 
-    console.log(league, "league");
-    console.log(isExist, "isExist");
+    // console.log(league, "league");
+    // console.log(isExist, "isExist");
 
     if (league && !isExist) {
       const joinLeague = new LeagueUser({
@@ -139,6 +140,57 @@ export const getSingleLeagueInfo = async (req, res) => {
     const { id } = req.params;
     const league = await League.findById(id);
     res.status(200).send(league);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+      success: false,
+    });
+  }
+};
+
+export const updateLeagueInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const league = await League.findById(id);
+    if (league) {
+      const result = await League.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      res.status(200).json({
+        success: true,
+        message: "League Info Update successfully",
+        data: removeSensitiveInfo(result),
+      });
+    } else {
+      res.status(201).json({
+        success: false,
+        message: "Update unsuccessful",
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+      success: false,
+    });
+  }
+};
+
+export const removeUserFromLeague = async (req, res) => {
+  try {
+    await LeagueUser.findOneAndDelete({ _id: req.params.id })
+      .exec()
+      .then((result) => {
+        res.status(200).send({
+          message: `${result.userName} is successfully removed!`,
+          success: true,
+        });
+      })
+      .catch((err) => {
+        res.status(401).send({
+          message: err.message,
+          success: false,
+        });
+      });
   } catch (err) {
     res.status(500).send({
       message: err.message,

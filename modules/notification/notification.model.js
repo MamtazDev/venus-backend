@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const noitficationSchema = new mongoose.Schema(
   {
-    user: {
+    leagueId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "League",
+      required: true,
+    },
+    leagueCreatorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,

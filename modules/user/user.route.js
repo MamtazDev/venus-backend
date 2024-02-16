@@ -1,6 +1,7 @@
 import express from "express";
 import { isAdmin, isAuth } from "../../utils/middleware.js";
 import {
+  changePassword,
   deleteUser,
   getAllUsers,
   getUser,
@@ -23,5 +24,6 @@ router.get("/userInfo/:id", isAuth, getUser);
 router.delete("/deleteUser/:id", isAdmin, deleteUser);
 
 router.patch("/updateUserInfo", isAuth, upload.single("image"), updateUserInfo);
+router.patch("/changePassword", isAuth, changePassword);
 
 export default router;
