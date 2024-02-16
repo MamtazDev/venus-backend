@@ -10,13 +10,8 @@ import messageRoutes from "./modules/message/message.routes.js";
 import notificationRoutes from "./modules/notification/notification.routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
-
-import { Server } from "socket.io";
-import { createServer } from 'node:http';
-
-
-
-// const socketIo = require("socket.io");
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 // CONFIGURATIONS
 const __filename = fileURLToPath(import.meta.url);
@@ -46,21 +41,11 @@ app.get("/", (req, res) => {
   res.send("Server is runnig");
 });
 
-
-
-const server = createServer(app);
-const io = new Server(server,{
-  cors: {
-    origin: "http://localhost:3000",
-  },
+// SOCKET
+const httpServer = createServer(app);
+const io = new SocketIOServer(httpServer, {
+  cors: {},
 });
-
-// const io = socketIo(Server, {
-//   cors: {
-//     origin: "https://silver-sitting-nextjs.vercel.app",
-//   },
-// });
-
 let users = [];
 
 const addUser = (userId, socketId) => {
@@ -77,25 +62,36 @@ const getUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
-  //when ceonnect
   console.log("a user connected.");
 
   //take userId and socketId from user
-  // socket.on("addUser", (userId) => {
-  //   addUser(userId, socket.id);
-  //   io.emit("getUsers", users);
-  // });
+  socket.on("addUser", (userId) => {
+    console.log("userId", userId);
 
-  // //send and get message
-  // socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-  //   console.log("user send Message!: ", senderId, receiverId, text);
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
+  });
 
-  //   const user = getUser(receiverId);
-  //   io.to(user?.socketId).emit("getMessage", {
-  //     senderId,
-  //     text,
-  //   });
-  // });
+  //take high bid value  and set as higher bid
+  socket.on("addHigherBid", (bid) => {
+    console.log("Heigher bid", bid);
+
+    // addUser(userId, socket.id);
+    addHigher = bid;
+    io.emit("getHigherBid", addHigher);
+  });
+
+  //send and get message
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    console.log("user send Message!: ", senderId, receiverId, text);
+
+    const user = getUser(receiverId);
+
+    io.to(user?.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+  });
 
   //when disconnect
   socket.on("disconnect", () => {
@@ -106,10 +102,10 @@ io.on("connection", (socket) => {
 });
 
 // Add a basic endpoint for testing
-app.get("/socket", (req, res) => {
-  res.send("Socket is running.");
+app.get("/", (req, res) => {
+  res.send("Server is running.");
 });
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
