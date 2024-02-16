@@ -46,11 +46,13 @@ const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer, {
   cors: {},
 });
+
+// users
 let users = [];
 
-const addUser = (userId, socketId) => {
+const addUser = (userId, leagueId, socketId) => {
   !users.some((user) => user.userId === userId) &&
-    users.push({ userId, socketId });
+    users.push({ userId, leagueId, socketId });
 };
 
 const removeUser = (socketId) => {
@@ -61,14 +63,25 @@ const getUser = (userId) => {
   return users.find((user) => user.userId === userId);
 };
 
+// messages
+let messages = [];
+
+const addMessage = (msg, leagueId, socketId) => {
+  messages = messages.filter((m) => m.leagueId !== leagueId);
+  messages.push({ msg, leagueId, socketId });
+};
+
+// timer
+let bidding = [];
+
 io.on("connection", (socket) => {
   console.log("a user connected.");
 
   //take userId and socketId from user
-  socket.on("addUser", (userId) => {
+  socket.on("addUser", (userId, leagueId) => {
     console.log("userId", userId);
 
-    addUser(userId, socket.id);
+    addUser(userId, leagueId, socket.id);
     io.emit("getUsers", users);
   });
 
@@ -77,25 +90,48 @@ io.on("connection", (socket) => {
     console.log("Heigher bid", bid);
 
     // addUser(userId, socket.id);
-    addHigher = bid;
-    io.emit("getHigherBid", addHigher);
+    // addHigher = bid;
+    io.emit("getHigherBid", "ddd");
   });
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    console.log("user send Message!: ", senderId, receiverId, text);
+  // socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+  //   console.log("user send Message!: ", senderId, receiverId, text);
 
-    const user = getUser(receiverId);
+  //   const user = getUser(receiverId);
 
-    io.to(user?.socketId).emit("getMessage", {
-      senderId,
-      text,
-    });
+  //   io.to(user?.socketId).emit("getMessage", {
+  //     senderId,
+  //     text,
+  //   });
+  // });
+
+  socket.on("message", (msg, leagueId) => {
+    console.log("message: " + msg);
+    addMessage(msg, leagueId, socket.id);
+    io.emit("message", messages);
+  });
+
+  // timer
+
+  socket.on("startTimer", (leagueId, second) => {
+    var counter = second;
+
+    var WinnerCountdown = setInterval(function () {
+      counter--;
+      io.sockets.emit("counter", counter);
+
+      if (counter === 0) {
+        io.sockets.emit("counter", "Auction End");
+        clearInterval(WinnerCountdown);
+      }
+    }, 1000);
   });
 
   //when disconnect
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (userId) => {
     console.log("a user disconnected!");
+    console.log("a user userId!", userId);
     removeUser(socket.id);
     io.emit("getUsers", users);
   });
