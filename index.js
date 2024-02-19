@@ -49,6 +49,7 @@ const io = new SocketIOServer(httpServer, {
 
 // users
 let users = [];
+let intervalId;
 
 const addUser = (userId, leagueId, socketId) => {
   !users.some((user) => user.userId === userId) &&
@@ -113,20 +114,36 @@ io.on("connection", (socket) => {
   });
 
   // timer
+  // socket.on("startTimer", (leagueId, second) => {
+  //   var counter = second;
+
+  //   var WinnerCountdown = setInterval(function () {
+
+  //     counter--;
+  //     io.sockets.emit("counter", counter);
+
+  //     if (counter === 0) {
+
+  //       console.log("counter valur in 0")
+
+  //       io.sockets.emit("counter", "Auction End");
+  //       clearInterval(WinnerCountdown);
+  //     }
+  //   }, 1000);
+  // });
 
   socket.on("startTimer", (leagueId, second) => {
-    var counter = second;
-
-    var WinnerCountdown = setInterval(function () {
-      counter--;
-      io.sockets.emit("counter", counter);
-
+    let counter = second;
+    clearInterval(intervalId); // Clear previous interval, if any
+    intervalId = setInterval(() => {
       if (counter === 0) {
-        io.sockets.emit("counter", "Auction End");
-        clearInterval(WinnerCountdown);
+        clearInterval(intervalId); // Stop the interval when counter reaches 0
       }
+      io.sockets.emit("counter", counter);
+      counter--;
     }, 1000);
   });
+
 
   //when disconnect
   socket.on("disconnect", (userId) => {
