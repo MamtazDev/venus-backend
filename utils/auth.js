@@ -15,3 +15,4 @@ export const removeSensitiveInfo = (user) => {
     user.toObject();
   return userWithoutPassword;
 };
+  

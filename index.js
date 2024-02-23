@@ -72,8 +72,17 @@ const addMessage = (msg, leagueId, socketId) => {
   messages.push({ msg, leagueId, socketId });
 };
 
-// timer
-let bidding = [];
+// bidinfo
+let bidInfo = [];
+
+const addBid = (leagueId, info) => {
+  bidInfo = bidInfo.filter((b) => b.leagueId !== leagueId);
+  bidInfo.push({ ...info, leagueId });
+};
+
+const getBidInfo = (leagueId) => {
+  return bidInfo.find((b) => b.leagueId === leagueId);
+};
 
 io.on("connection", (socket) => {
   console.log("a user connected.");
@@ -87,25 +96,11 @@ io.on("connection", (socket) => {
   });
 
   //take high bid value  and set as higher bid
-  socket.on("addHigherBid", (bid) => {
-    console.log("Heigher bid", bid);
+  socket.on("addBid", (leagueId, info) => {
+    addBid(leagueId, info);
 
-    // addUser(userId, socket.id);
-    // addHigher = bid;
-    io.emit("getHigherBid", "ddd");
+    io.emit("getBidInfo", getBidInfo(leagueId));
   });
-
-  //send and get message
-  // socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-  //   console.log("user send Message!: ", senderId, receiverId, text);
-
-  //   const user = getUser(receiverId);
-
-  //   io.to(user?.socketId).emit("getMessage", {
-  //     senderId,
-  //     text,
-  //   });
-  // });
 
   socket.on("message", (msg, leagueId) => {
     console.log("message: " + msg);
@@ -133,17 +128,18 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("startTimer", (leagueId, second) => {
+    console.log("fjskfs");
     let counter = second;
     clearInterval(intervalId); // Clear previous interval, if any
     intervalId = setInterval(() => {
       if (counter === 0) {
         clearInterval(intervalId); // Stop the interval when counter reaches 0
+        io.sockets.emit("counter", "Auction End", getBidInfo(leagueId));
       }
-      io.sockets.emit("counter", counter);
+      io.sockets.emit("counter", counter, null);
       counter--;
     }, 1000);
   });
-
 
   //when disconnect
   socket.on("disconnect", (userId) => {
