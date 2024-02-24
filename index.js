@@ -71,6 +71,13 @@ const addMessage = (msg, leagueId, socketId) => {
   messages = messages.filter((m) => m.leagueId !== leagueId);
   messages.push({ msg, leagueId, socketId });
 };
+const removeMessage = (socketId) => {
+  messages = messages.filter((msg) => msg.socketId !== socketId);
+};
+
+const getMessage = (leagueId) => {
+  return messages.find((i) => i.leagueId === leagueId);
+};
 
 // bidinfo
 let bidInfo = [];
@@ -103,32 +110,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", (msg, leagueId) => {
-    console.log("message: " + msg);
     addMessage(msg, leagueId, socket.id);
-    io.emit("message", messages);
+    // io.emit("message", messages);
+    io.emit("message", getMessage(leagueId));
   });
 
-  // timer
-  // socket.on("startTimer", (leagueId, second) => {
-  //   var counter = second;
-
-  //   var WinnerCountdown = setInterval(function () {
-
-  //     counter--;
-  //     io.sockets.emit("counter", counter);
-
-  //     if (counter === 0) {
-
-  //       console.log("counter valur in 0")
-
-  //       io.sockets.emit("counter", "Auction End");
-  //       clearInterval(WinnerCountdown);
-  //     }
-  //   }, 1000);
-  // });
-
   socket.on("startTimer", (leagueId, second) => {
-    console.log("fjskfs");
     let counter = second;
     clearInterval(intervalId); // Clear previous interval, if any
     intervalId = setInterval(() => {
@@ -142,10 +129,10 @@ io.on("connection", (socket) => {
   });
 
   //when disconnect
-  socket.on("disconnect", (userId) => {
+  socket.on("disconnect", () => {
     console.log("a user disconnected!");
-    console.log("a user userId!", userId);
     removeUser(socket.id);
+    removeMessage(socket.id);
     io.emit("getUsers", users);
   });
 });
