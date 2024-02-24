@@ -100,6 +100,8 @@ export const getUserLeagues = async (req, res) => {
     const userLeagues = await LeagueUser.find({
       user: req.user._id,
     }).populate("league");
+
+    // const LeagueUsers= await
     res.status(200).send(userLeagues);
   } catch (err) {
     res.status(500).send({
@@ -110,12 +112,8 @@ export const getUserLeagues = async (req, res) => {
 };
 
 export const getLeagueUsersData = async (req, res) => {
-
-  //realtime auction user activation
-
-
   try {
-    const { leagueId } = req.params;  
+    const { leagueId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(leagueId)) {
       return res
