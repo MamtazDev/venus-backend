@@ -91,6 +91,28 @@ const getBidInfo = (leagueId) => {
   return bidInfo.find((b) => b.leagueId === leagueId);
 };
 
+// auctions
+let auctions = [];
+
+const addAuction = (leagueId) => {
+  auctions = auctions.filter((a) => a !== leagueId);
+  auctions.push(leagueId);
+};
+const getAuction = (leagueId) => {
+  return auctions.find((b) => b === leagueId);
+};
+
+// winner
+let winners = [];
+
+const addWinner = (leagueId) => {
+  winners = winners.filter((a) => a !== leagueId);
+  winners.push(leagueId);
+};
+const getWinner = (leagueId) => {
+  return winners.find((b) => b === leagueId);
+};
+
 io.on("connection", (socket) => {
   console.log("a user connected.");
 
@@ -116,6 +138,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startTimer", (leagueId, second) => {
+    addAuction(leagueId);
     let counter = second;
     clearInterval(intervalId); // Clear previous interval, if any
     intervalId = setInterval(() => {
@@ -126,6 +149,12 @@ io.on("connection", (socket) => {
       io.sockets.emit("counter", counter, null);
       counter--;
     }, 1000);
+    io.emit("auctionStarted", getAuction(leagueId));
+  });
+
+  socket.on("winnerSelected", (leagueId) => {
+    addWinner(leagueId);
+    io.emit("getWinner", getWinner(leagueId));
   });
 
   //when disconnect
