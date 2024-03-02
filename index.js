@@ -8,6 +8,7 @@ import auctionRoutes from "./modules/auction/auction.routes.js";
 import publicApiRoutes from "./modules/publicApis/publicApis.routes.js";
 import messageRoutes from "./modules/message/message.routes.js";
 import notificationRoutes from "./modules/notification/notification.routes.js";
+import payoutRoutes from "./modules/payout/payout.routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
@@ -32,6 +33,7 @@ app.use("/api/league", leagueRoutes);
 app.use("/api/auction", auctionRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/notification", notificationRoutes);
+app.use("/api/payout", payoutRoutes);
 
 app.use("/public-api", publicApiRoutes);
 

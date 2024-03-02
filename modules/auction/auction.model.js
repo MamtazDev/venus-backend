@@ -12,6 +12,10 @@ const auctionSchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
+    teamId: {
+      type: String,
+      required: true,
+    },
     bidInfo: {
       type: [
         {
@@ -33,6 +37,11 @@ const auctionSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: false,
+    },
+    payout: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     isActive: {
       type: Boolean,
