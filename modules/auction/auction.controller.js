@@ -49,7 +49,7 @@ export const updateAuctionSettings = async (req, res) => {
 
 export const auctionCreated = async (req, res) => {
   try {
-    const newAuction = new Auction(req.body);
+    const newAuction = new Auction({ ...req.body, teamId: req.body.team.id });
 
     const auction = await newAuction.save();
 
@@ -87,7 +87,7 @@ export const getAllAuctionsByLeagueId = async (req, res) => {
 
 export const setTeamOwner = async (req, res) => {
   const { owner, price, leagueId } = req.body;
-  console.log(owner, "owner");
+
   try {
     const result = await Auction.findByIdAndUpdate(
       req.params.id,
@@ -105,10 +105,10 @@ export const setTeamOwner = async (req, res) => {
         user: owner,
         league: leagueId,
       },
-      { $inc: { buyIn: price } },
+      { $inc: { buyIn: price, netReturn: -price } },
       { new: true, useFindAndModify: false }
     );
-    console.log(info, "infooo");
+
     res.status(200).json({
       success: true,
       message: "Auction status changed Successfully!",
